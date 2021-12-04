@@ -4,8 +4,30 @@ import Buscador from "./components/Buscador";
 
 class App extends Component {
 
+  state = {
+    termino : '',
+    imagenes : []
+  }
+
+  consultarApi = () => {
+
+    const termino = this.state.termino;
+    const url = `https://pixabay.com/api/videos/?key=24653386-296d89357bbc18309d864fb59&q=${termino}&per_page=30`;
+
+    //console.log(url);
+    fetch(url)
+      .then(respuesta => respuesta.json() )
+      .then(resultado => this.setState({ imagenes : resultado.hits }) )
+
+
+  }
+
   datosBusqueda = (termino) => {
-    console.log(termino);
+    this.setState({
+      termino
+    }, () => {
+      this.consultarApi();
+    })
   }
 
   render() {
