@@ -13,7 +13,7 @@ class App extends Component {
   consultarApi = () => {
 
     const termino = this.state.termino;
-    const url = `https://pixabay.com/api/videos/?key=24653386-296d89357bbc18309d864fb59&q=${termino}&per_page=30`;
+    const url = `https://pixabay.com/api/?key=24653386-296d89357bbc18309d864fb59&q=${termino}&per_page=30`;
 
     //console.log(url);
     fetch(url)
