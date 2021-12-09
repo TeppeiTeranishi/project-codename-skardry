@@ -7,15 +7,54 @@ class App extends Component {
 
   state = {
     termino : '',
-    imagenes : []
+    imagenes : [],
+    pagina : ''
+  }
+
+  scroll = () => {
+    const elemento = document.querySelector('.jumbotron');
+    elemento.scrollIntoView('smooth', 'start')
+  }
+
+  paginaAnterior = () => {
+    //leer el state de la pagina actual
+    let pagina = this.state.pagina;
+
+    //Leer si la pagina es 1, no retroceder mas
+    if (pagina === 1) return null;
+    //resta uno a la pagina actual
+    pagina -= 1;
+    //agregar el cambio al state
+    this.setState({
+      pagina
+    }, () => {
+      this.consultarApi();
+      this.scroll();
+    });
+  }
+
+  paginaSiguiente = () => {
+    //leer el state de la pagina actual
+    let pagina = this.state.pagina;
+    //sumar uno a la pagina actual
+    pagina += 1;
+    //agregar el cambio al state
+    this.setState({
+      pagina
+    }, () => {
+      this.consultarApi();
+      this.scroll();
+    });
+    //console.log(pagina);
   }
 
   consultarApi = () => {
 
     const termino = this.state.termino;
-    const url = `https://pixabay.com/api/?key=24653386-296d89357bbc18309d864fb59&q=${termino}&per_page=30`;
+    const pagina = this.state.pagina;
+    const url = `https://pixabay.com/api/?key=24653386-296d89357bbc18309d864fb59&q=${termino}&per_page=30&page=${pagina}`;
 
-    //console.log(url);
+    console.log(url);
     fetch(url)
       .then(respuesta => respuesta.json() )
       .then(resultado => this.setState({ imagenes : resultado.hits }) )
@@ -25,7 +64,8 @@ class App extends Component {
 
   datosBusqueda = (termino) => {
     this.setState({
-      termino
+      termino : termino,
+      pagina : 1
     }, () => {
       this.consultarApi();
     })
@@ -40,9 +80,13 @@ class App extends Component {
             datosBusqueda={this.datosBusqueda}
           />
         </div>
-        <Resultado 
-          imagenes={this.state.imagenes}
-        />
+        <div className="row justify-content-center">
+          <Resultado 
+            imagenes={this.state.imagenes}
+            paginaAnterior={this.paginaAnterior}
+            paginaSiguiente ={this.paginaSiguiente}
+          />
+        </div>
       </div>
     );
   }
